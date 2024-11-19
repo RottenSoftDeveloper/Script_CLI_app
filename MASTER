@@ -1,0 +1,27 @@
+import subprocess
+import datetime
+import glob
+
+
+def run_script(script_path, log_file):
+    try:
+        subprocess.run(["C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python312\\pythonw.exe", script_path], check=True)
+        log_file.write(f"{datetime.datetime.now()} - Script '{script_path}' executed successfully.\n")
+    except subprocess.CalledProcessError as e:
+        log_file.write(f"{datetime.datetime.now()} - Error executing script '{script_path}': {e}\n")
+
+
+if __name__ == "__main__":
+    log_path = r"c:\Users\Administrator\Documents\Py scripts\MASTER\logs\script_log.txt"
+    
+    with open(log_path, "a") as log_file:
+        # You can add as many paths as you want
+        folders = [
+            r"C:\Users\Administrator\Documents\Py scripts\Vulnerabilies"
+        ]
+
+
+        for folder in folders:
+            py_files = glob.glob(folder + "/*.py")
+            for script in py_files:
+                run_script(script, log_file)
