@@ -1,0 +1,220 @@
+import os
+import subprocess
+import datetime
+import glob
+import re
+from tqdm import tqdm
+import time
+
+
+def clear_screen():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+
+def run_script(script_path, log_file, info_log_file):
+    try:
+        result = subprocess.run(
+            ["C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python312\\pythonw.exe", script_path],
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True
+        )
+        log_file.write(f"{datetime.datetime.now()} - Script '{script_path}' executed successfully.\n")
+        info_log_file.write(f"{datetime.datetime.now()} - Script '{script_path}' executed successfully.\n")
+        log_file.flush()  # Flush the log file to ensure updates are immediate
+        info_log_file.flush()  # Flush the info log file
+        print(f"{colors.OKGREEN}{datetime.datetime.now()} - Script '{script_path}' executed successfully.{colors.ENDC}")
+        return True
+    except subprocess.CalledProcessError as e:
+        log_file.write(f"{datetime.datetime.now()} - Error executing script '{script_path}': {e}\n")
+        formatted_error = re.sub(r'\s+', ' ', e.stderr)
+        formatted_error = re.sub(r'[~^]', '', formatted_error)
+        info_log_file.write(f"{datetime.datetime.now()} - Script '{script_path}' failed with error: {formatted_error}\n")
+        log_file.flush()  # Flush the log file to ensure updates are immediate
+        info_log_file.flush()  # Flush the info log file
+        print(f"{colors.FAIL}{datetime.datetime.now()} - Script '{script_path}' failed with error: {formatted_error}{colors.ENDC}")
+        return False
+
+
+def list_scripts(folder):
+    return glob.glob(folder + "/*.py")
+
+
+def display_log(log_path):
+    try:
+        with open(log_path, "r") as log_file:
+            log_lines = log_file.readlines()
+            print("\n".join(log_lines))
+    except FileNotFoundError:
+        print(f"{colors.FAIL}Log file '{log_path}' not found.{colors.ENDC}")
+    except Exception as e:
+        print(f"{colors.FAIL}Error reading log file: {e}{colors.ENDC}")
+
+
+
+
+
+
+def display_main_menu(options, prompt="Choose an option:"):
+    clear_screen()
+    print("*" * 50)
+    print("*    Cylerian Scripts Made Simple: Fabien N.     *")
+    print("*       Please Run Responsibly :]                *")
+    print("*" * 50)
+    for i, option in enumerate(options, start=1):
+        print(f"{i}. {option}")
+    return input(prompt)
+
+
+def display_folder_menu(folder_name, scripts, script_log_path, info_log_path, size_log_path, prompt="Select script(s) to run (comma-separated) or go back:"):
+    clear_screen()
+    print(f"{colors.OKBLUE}[Current folder: {folder_name}]{colors.ENDC}\n")
+    script_names = [script.split("\\")[-1] for script in scripts]
+    for i, script in enumerate(script_names, start=1):
+        print(f"{i}. {script}")
+    print(f"{len(script_names) + 1}. Run all scripts in this folder")
+    print(f"{len(script_names) + 2}. Reload Scripts")
+    print(f"{len(script_names) + 3}. View recent logs")
+    print(f"{len(script_names) + 4}. Back")
+    
+    while True:
+        try:
+            script_choice = input(prompt)
+            if script_choice.isdigit():
+                script_choice = [int(script_choice)]
+            else:
+                script_choice = [int(num.strip()) for num in script_choice.split(',') if num.strip().isdigit()]
+            
+            if all(1 <= num <= len(script_names) for num in script_choice):
+                if folder_name == "PGsize" and 1 in script_choice:
+                    display_log(size_log_path)
+                    input("Press Enter to continue...")
+                return script_choice
+            elif [len(script_names) + 1] == script_choice:
+                return [len(script_names) + 1]
+            elif [len(script_names) + 2] == script_choice:
+                return [len(script_names) + 2]
+            elif [len(script_names) + 3] == script_choice:
+                return [len(script_names) + 3]
+            elif [len(script_names) + 4] == script_choice:
+                return [len(script_names) + 4]
+            else:
+                print(f"{colors.FAIL}Invalid script number. Please try again.{colors.ENDC}")
+        except ValueError:
+            print(f"{colors.FAIL}Invalid input. Please enter a valid number or comma-separated numbers.{colors.ENDC}")
+
+
+def main():
+    script_log_path = r"C:\Users\Administrator\Documents\Py scripts\MASTER\logs\script_log.txt"
+    info_log_path = r"C:\Users\Administrator\Documents\Py scripts\MASTER\logs\info_log.txt"
+    size_log_path = r"C:\Users\Administrator\Documents\Py scripts\MASTER\logs\size_log.txt"
+    
+    folders = {
+        "Accounts": r"C:\Users\Administrator\Documents\Py scripts\",
+        "ActiveDir": r"C:\Users\Administrator\Documents\Py scripts\",
+        "Alerts": r"C:\Users\Administrator\Documents\Py scripts\",
+        "Crowdstrike": r"C:\Users\Administrator\Documents\Py scripts\",
+        "Phish": r"C:\Users\Administrator\Documents\Py scripts\",
+        "SHODAN": r"C:\Users\Administrator\Documents\Py scripts\",
+        "Vulnerabilities": r"C:\Users\Administrator\Documents\Py scripts\",
+        "PGsize": r"C:\Users\Administrator\Documents\Py scripts\"
+    }
+
+
+    while True:
+        with open(script_log_path, "a") as script_log_file, open(info_log_path, "a") as info_log_file:
+            folder_choice = display_main_menu(list(folders.keys()) + ["Run selected folders", "Run all scripts", "Reload Scripts", "Exit", "View recent logs"], "Select a folder or action: ")
+
+
+            if folder_choice == str(len(folders) + 5):
+                display_log(info_log_path)
+                input("Press Enter to continue...")
+            elif folder_choice == str(len(folders) + 1):
+                selected_folders = input("Enter folder numbers (comma-separated) to run scripts from: ")
+                folder_indices = [int(idx.strip()) - 1 for idx in selected_folders.split(",") if idx.strip().isdigit() and 0 <= int(idx.strip()) - 1 < len(folders)]
+                selected_scripts = [script for idx in folder_indices for script in list_scripts(list(folders.values())[idx])]
+                for script in selected_scripts:
+                    print(f"{colors.OKBLUE}Running script: {script}{colors.ENDC}")
+                    success = run_script(script, script_log_file, info_log_file)
+                    if success:
+                        print(f"{colors.OKGREEN}Script '{script}' executed successfully.{colors.ENDC}")
+                    else:
+                        print(f"{colors.FAIL}Error executing script '{script}'. Check the log file at: {info_log_path}{colors.ENDC}")
+                    time.sleep(0.5)
+                input("Press Enter to continue...")
+            elif folder_choice == str(len(folders) + 2):
+                all_scripts = [script for folder in folders.values() for script in list_scripts(folder)]
+                for script in all_scripts:
+                    print(f"{colors.OKBLUE}Running script: {script}{colors.ENDC}")
+                    success = run_script(script, script_log_file, info_log_file)
+                    if success:
+                        print(f"{colors.OKGREEN}Script '{script}' executed successfully.{colors.ENDC}")
+                    else:
+                        print(f"{colors.FAIL}Error executing script '{script}'. Check the log file at: {info_log_path}{colors.ENDC}")
+                    time.sleep(0.5)
+                input("Press Enter to continue...")
+            elif folder_choice == str(len(folders) + 3):
+                print(f"{colors.OKBLUE}Reloading scripts...{colors.ENDC}")
+                for _ in tqdm(range(5), desc="Reloading scripts", unit="step"):
+                    time.sleep(0.5)
+                print(f"{colors.OKGREEN}Scripts reloaded.{colors.ENDC}")
+                input("Press Enter to continue...")
+                continue
+            elif folder_choice == str(len(folders) + 4):
+                print(f"{colors.OKBLUE}Exiting...{colors.ENDC}")
+                break
+            else:
+                try:
+                    folder_choice = int(folder_choice)
+                    selected_folder = list(folders.values())[folder_choice - 1]
+                    folder_name = list(folders.keys())[folder_choice - 1]
+                except (ValueError, IndexError):
+                    print(f"{colors.FAIL}Invalid choice. Please try again.{colors.ENDC}")
+                    input("Press Enter to continue...")
+                    continue
+
+
+                while True:
+                    scripts = list_scripts(selected_folder)
+                    script_choices = display_folder_menu(folder_name, scripts, script_log_path, info_log_path, size_log_path)
+
+
+                    if script_choices == [len(scripts) + 1]:
+                        for script in scripts:
+                            print(f"{colors.OKBLUE}Running script: {script}{colors.ENDC}")
+                            success = run_script(script, script_log_file, info_log_file)
+                            if success:
+                                print(f"{colors.OKGREEN}Script '{script}' executed successfully.{colors.ENDC}")
+                            else:
+                                print(f"{colors.FAIL}Error executing script '{script}'. Check the log file at: {info_log_path}{colors.ENDC}")
+                            time.sleep(0.5)
+                        input("Press Enter to continue...")
+                    elif script_choices == [len(scripts) + 2]:
+                        print(f"{colors.OKBLUE}Reloading scripts in folder...{colors.ENDC}")
+                        for _ in tqdm(range(5), desc="Reloading scripts", unit="step"):
+                            time.sleep(0.5)
+                        print(f"{colors.OKGREEN}Scripts reloaded.{colors.ENDC}")
+                        input("Press Enter to continue...")
+                        continue
+                    elif script_choices == [len(scripts) + 3]:
+                        display_log(info_log_path)
+                        input("Press Enter to continue...")
+                    elif script_choices == [len(scripts) + 4]:
+                        break
+                    else:
+                        for script_choice in script_choices:
+                            if script_choice <= len(scripts):
+                                script = scripts[script_choice - 1]
+                                print(f"{colors.OKBLUE}Running script: {script}{colors.ENDC}")
+                                success = run_script(script, script_log_file, info_log_file)
+                                if success:
+                                    print(f"{colors.OKGREEN}Script '{script}' executed successfully.{colors.ENDC}")
+                                else:
+                                    print(f"{colors.FAIL}Error executing script '{script}'. Check the log file at: {info_log_path}{colors.ENDC}")
+                                time.sleep(0.5)
+                        input("Press Enter to continue...")
+
+
+if __name__ == "__main__":
+    main()
