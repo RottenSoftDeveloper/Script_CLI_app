@@ -1,3 +1,4 @@
+Script 1: CLI APP
 **Scripts Made Simple**
 
 **Overview**
@@ -82,3 +83,141 @@ Use this tool responsibly. Ensure that the scripts you execute are safe and free
 
 
 “Please Run Responsibly :]”
+
+Script 2: PostgreSQL to CSV Exporter
+
+```markdown
+# PostgreSQL to CSV Exporter
+
+A Python script to export data from a PostgreSQL table into a CSV file. The script connects to a PostgreSQL database, executes a query to retrieve data, and writes the results into a specified CSV file.
+
+---
+
+## 🚀 Features
+
+- **Data Export**: Exports data from a PostgreSQL table to a CSV file.
+- **Custom Queries**: Easily modify the SQL query to export specific data.
+- **Automatic CSV Headers**: Includes table column names as CSV headers.
+
+---
+
+## 🛠 Prerequisites
+
+- **Python 3.x** installed on your system.
+- Required Python libraries:
+  - `psycopg2`
+- Access to a PostgreSQL database.
+
+---
+
+## 📥 Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/postgres-to-csv-exporter.git
+   cd postgres-to-csv-exporter
+   ```
+
+2. Install dependencies:
+   ```bash
+   pip install psycopg2
+   ```
+
+3. Update the script with your PostgreSQL connection details and query.
+
+---
+
+## ⚙️ Configuration
+
+### Database Connection
+
+Edit the following details in the script:
+
+```python
+# PostgreSQL connection details
+conn = psycopg2.connect(
+    dbname="Cylerian",
+    user="dave",
+    password="!1950!DpD!",
+    host="127.0.0.1",
+    port="5432"
+)
+```
+
+### SQL Query
+
+Modify the SQL query to select data from your desired table:
+
+```python
+# Execute SQL query to select data
+cur.execute("SELECT * FROM Highgate-Vulnerabilities")
+```
+
+### CSV File Path
+
+Set the path for the output CSV file:
+
+```python
+# Write rows to CSV file
+with open('C:\\Users\\Administrator\\Documents\\Py scripts\\highgate_vulnerabilities.csv', 'w', newline='') as f:
+    ...
+```
+
+---
+
+## ▶️ Usage
+
+1. Run the script:
+   ```bash
+   python postgres_to_csv.py
+   ```
+2. The script will:
+   - Connect to the PostgreSQL database.
+   - Execute the specified SQL query.
+   - Write the query results into a CSV file.
+
+---
+
+## 📁 Directory Structure Example
+
+```plaintext
+postgres-to-csv-exporter/
+│
+├── postgres_to_csv.py
+├── requirements.txt
+├── README.md
+└── output/
+    └── highgate_vulnerabilities.csv
+```
+
+---
+
+## 📊 Output
+
+- **CSV Export**:
+  - The specified PostgreSQL table is exported to a CSV file.
+- **File Location**:
+  - The CSV file is saved to the specified path, e.g.:
+    ```plaintext
+    C:\Users\Administrator\Documents\Py scripts\highgate_vulnerabilities.csv
+    ```
+
+---
+
+## 🔔 Notes
+
+- Ensure the table name and SQL query are valid for your PostgreSQL database.
+- Verify file paths and permissions to avoid issues during CSV creation.
+
+---
+
+## 📜 License
+
+This project is licensed under the [MIT License](LICENSE).
+
+---
+
+## 🧑‍💻 Author
+
+ _“Automate smarter, not harder.”_
+```
