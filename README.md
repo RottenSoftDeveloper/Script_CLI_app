@@ -1,4 +1,5 @@
 Script 1: CLI APP
+
 **Scripts Made Simple**
 
 **Overview**
