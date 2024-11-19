@@ -1,5 +1,5 @@
-Script 1: CLI APP
-
+                                                           Script 1: CLI APP
+ 
 **Scripts Made Simple**
 
 **Overview**
@@ -85,8 +85,8 @@ Use this tool responsibly. Ensure that the scripts you execute are safe and free
 
 “Please Run Responsibly :]”
 
-Script 2: PostgreSQL to CSV Exporter
-
+                                                    Script 2: PostgreSQL to CSV Exporter
+ 
 ```markdown
 # PostgreSQL to CSV Exporter
 
@@ -137,9 +137,9 @@ Edit the following details in the script:
 ```python
 # PostgreSQL connection details
 conn = psycopg2.connect(
-    dbname="Cylerian",
-    user="dave",
-    password="!1950!DpD!",
+    dbname="",
+    user="",
+    password="",
     host="127.0.0.1",
     port="5432"
 )
